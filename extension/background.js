@@ -18,10 +18,6 @@ function checkDisableStaticRulesPerformanceAndTestAgainAfterEnableAllRules(resol
       enableRuleIds: []
     };
 
-    if (disabled_rules_count <= 0) {
-      console.error('disabled_rules_count must be greater than 0 ');
-      return;
-    }
     option.disableRuleIds = Array.from({length: disabled_rules_count}, (_, i) => i + 10001);
 
     var start = performance.now();
@@ -30,7 +26,6 @@ function checkDisableStaticRulesPerformanceAndTestAgainAfterEnableAllRules(resol
         (result) => {
       let perf = performance.now() - start;
       let disabled_rules_count = test_context.disabled_rules_count_list[test_context.index];
-      //console.error('Result with ' + disabled_rules_count + ' disabled rules: ' + perf);
       test_context.results[test_context.index].push(perf);
 
       chrome.declarativeNetRequest.updateStaticRules(
@@ -54,10 +49,6 @@ function startTest(resolve) {
       console.error(test_context.disabled_rules_count_list[i] + ": " +
                     getAverageAfterRemovingOutliers(perfs));
     }
-    //for (const [i, perfs] of Object.entries(test_context.results)) {
-    //  console.error(test_context.disabled_rules_count_list[i] + ": " +
-    //                JSON.stringify(Array.from(perfs, perf => perf.toFixed(2))));
-    //}
   } else {
     test_context.results[test_context.index] = [];
     test_context.iteration = 0;
@@ -71,7 +62,7 @@ function startTest(resolve) {
 var test_context = {
   index: 0,
   iteration: 0,
-  disabled_rules_count_list: [10000, 20000, 30000, 40000, 50000, 60000],
+  disabled_rules_count_list: Array.from({length: 21}, (_, i) => i * 250),
   results: {},
 };
 
